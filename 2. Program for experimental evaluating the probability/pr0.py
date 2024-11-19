@@ -107,8 +107,8 @@ if __name__=='__main__':
         con0 += s[1]
     for i in range (16):
         processes[i].join()
-    print("The number of data: "con)
-    print("The number of data which fit the distinguisher:"con0)
+    print("The number of data: "con0)
+    print("The number of data which fit the distinguisher:"con)
     print("Probbility:"con / con0)
 
 
