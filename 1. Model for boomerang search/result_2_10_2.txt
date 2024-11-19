@@ -1,0 +1,12 @@
+The 14-round distinguisher:
+2-round E0 part: 
+X0: 000a000000000000ff00000000000000  -2                                
+X1: 00000000000000af0000000000000000  -2                                
+X2: 00000000000000000000000a00000000  none                              
+10 round middle part:
+number of common active S-box: 4
+number of constrained S-box: 1
+2-round E1 part: 
+X12: 00a00000000000000000000000000000  -2                                
+X13: 00000000000000500000000000000a00  -2                                
+X14: 00000000007000000000a00500000000  none                              

@@ -1,0 +1,2 @@
+This program runs under Python 3. 
+The parameters can be modified directly in the program. 
