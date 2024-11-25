@@ -29,9 +29,9 @@ def irf(state, key, rn):
         res[p + 1] = Sbox[res[p]] ^ state[pi[p + 1]] ^ k[i]
     return res
 
-def pr(co):
+def pr(nop, co):
     #Set rm
-    nr = 10
+    rm = 10
     #Set the active position of the input in the upper trail of Em part
     inn = [16, 19]
     #Set the active position of the output in the lower trail of Em part
@@ -54,7 +54,7 @@ def pr(co):
     for i in range (16):
         key[0].append(random.randint(0, 15))
         key[1].append(random.randint(0, 15))
-    for _ in range (1 << nd):
+    for _ in range (1 << (nd - nop - 4)):
         for i in range (32):
             st[i] = random.randint(0, 15)
         st[inn[0]] = 0
@@ -65,7 +65,7 @@ def pr(co):
             stateb = statea.copy()
             for j in range (Lu):
                 stateb[inn[j]] = stateb[inn[j]] ^ udif
-            for j in range (nr):
+            for j in range (rm):
                 statea = rf(statea, key, j)
                 stateb = rf(stateb, key, j)
             statec = statea.copy()
@@ -73,9 +73,9 @@ def pr(co):
             for j in range (Ll):
                 statec[ott[j]] = statec[ott[j]] ^ ldif
                 stated[ott[j]] = stated[ott[j]] ^ ldif
-            for j in range (nr):
-                statec = irf(statec, key, nr - 1 - j)
-                stated = irf(stated, key, nr - 1 - j)
+            for j in range (rm):
+                statec = irf(statec, key, rm - 1 - j)
+                stated = irf(stated, key, rm - 1 - j)
             k = 0
             for j in range (32):
                 dif = statec[j] ^ stated[j]
@@ -87,6 +87,10 @@ def pr(co):
     co.send([con, con0])
 
 if __name__=='__main__':
+    #Set the number of processes
+    nop = 3
+
+    N = 1 << 3
     cp = []
     cs = []
     processes = []
@@ -94,18 +98,18 @@ if __name__=='__main__':
     cons = []
     con0 = 0
     con = 0
-    for i in range (16):
+    for i in range (N):
         cop, cos = mulp.Pipe()
         cp.append(cop)
         cs.append(cos)
-        processes.append(mulp.Process(target = pr, args = (cs[i], )))
-    for i in range (16):
+        processes.append(mulp.Process(target = pr, args = (nop, cs[i], )))
+    for i in range (N):
         processes[i].start()
-    for i in range (16):
+    for i in range (N):
         s = cp[i].recv()
         con += s[0]
         con0 += s[1]
-    for i in range (16):
+    for i in range (N):
         processes[i].join()
     print("The number of data: "con0)
     print("The number of data which fit the distinguisher:"con)
